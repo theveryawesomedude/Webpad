@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webpad</title>
+    <link rel="icon" href="favicon.png"/>
+
+    <style>
+        #container {
+            height: 300px;
+            padding: 10px;
+            overflow: auto;
+            background-color: black;
+            color: white;
+            font-family: Arial;
+            border-radius: 10px;
+            margin-top: 5px;
+            transition: box-shadow 1s ease;
+        }
+
+        #container:hover {
+            box-shadow: 0 0 24px rgba(0,0,2,0.4);
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        #in {
+            padding: 4px;
+            font-size: 12px;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            transition: transform 0.3s ease; color 0.3s ease; background-color 0.3s ease;
+            font-family: Arial;
+            border: 3px solid black;
+        }
+
+        #in:hover {
+            transform: scale(1.05);
+            color: black;
+            background-color: white;
+        }
+
+        #btn {
+            padding: 8px 12px;
+            font-size: 12px;
+            background-color: black;
+            color: white;
+            border: 3px solid black;
+            transition: transform 0.3s ease; color 0.3s ease; background-color 0.3s ease;
+            font-family: Arial;
+            border-radius: 10px;
+        }
+
+        #btn:hover {
+            transform: scale(1.05);
+            color: black;
+            background-color: white;
+        }
+
+        #btn:active {
+            transform: scale(0.95);
+            color: white;
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="input-area">
+        <input type="text" placeholder="Type Here.." id="in" />
+        <button id="btn">Write</button>
+        <button id="btn" onclick="downloadText()">Download Note</button>
+        <button id="btn" onclick="saveToBrowser()">Save to Browser</button>
+        <button id="btn" onclick="loadNoteFromBrowser()">Load Note from Browser</button>
+        <button id="btn" onclick="clearNote()">Clear Note</button>
+    </div>
+
+    <div id="container"></div>
+
+    <script>
+        const input = document.getElementById('in');
+        const btn = document.getElementById('btn');
+        const container = document.getElementById('container');
+
+        btn.addEventListener('click', () => {
+            const p = document.createElement('p');
+            p.textContent = input.value;
+            container.appendChild(p);
+            input.value = '';
+        });
+    </script>
+
+    <script>
+        function downloadText() {
+            const text = document.getElementById("container").innerText;
+
+            const blob = new Blob([text], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "new Note.txt";
+
+            document.body.appendChild(a);
+            a.click();
+
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+
+    <script>
+        function saveToBrowser() {
+            const text = document.getElementById("container").innerText;
+            localStorage.setItem("savedNote", text);
+            alert("Note saved to browser!");
+        }
+    </script>
+
+    <script>
+        function loadNoteFromBrowser() {
+            const savedText = localStorage.getItem("savedNote");
+            if (savedText) {
+                const container = document.getElementById("container");
+                container.innerText = savedText;
+                alert("Note loaded from browser!");
+            } else {
+                alert("No saved note found in browser.");
+            }
+        }
+    </script>
+
+    <script>
+        function clearNote() {
+            const container = document.getElementById("container");
+            container.innerText = '';
+            alert("Cleared.");
+        }
+    </script>
+
+    <h1 style="text-align: center; font-family: Arial;">Webpad</h1>
+    <p style="text-align: center; font-family: Arial;">This is just a simple web browser text editor i made.</p>
+    <p style="text-align: center; font-family: Arial;">So basically you type into that box that says "Type here..." than hit "Write", you will write text onto the note.</p>
+    <p style="text-align: center; font-family: Arial;">You can download your text by clicking the button that says "Download Note"</p>
+    <p style="text-align: center; font-family: Arial;">You can save your note to the browser's localStorage by clicking the "Save to Browser" button and to load the note from there click "Load Note from Browser" to load from the browser's localStorage'</p>
+    <p style="text-align: center; font-family: Arial;">Note that loading from localStorage will load the latest saved note.</p>
+    <h3 style="text-align: center; font-family: Arial;">Webpad for Desktop will release soon! basically its just Webpad as a desktop app via Electron</h3>
+</body>
+</html>
